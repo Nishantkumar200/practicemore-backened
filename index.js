@@ -16,16 +16,22 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 5000;
 
 
+app.use("/",(req,res) =>{
+  res.send("Api is running now")
+})
+
+
 //All routing goes here
 app.use("/user/",userrouter);
 app.use("/challenge/",questionRoute)
 app.use("/code",executionRoute)
 app.use(sessionRoute)
 
-const db = mongoose.connect("mongodb+srv://nishant123:nishant123@cluster0.ji1fv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{
+const db = mongoose.connect("mongodb+srv://nishant1234:nishant1234@cluster0.kr2s6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{
   useUnifiedTopology: true,
-  useFindAndModify:false,
+  useFindAndModify:true,
   useCreateIndex:true,
+  useNewUrlParser:true
 
 });
 db.then(() => console.log("Successfully connnected to the database")).catch(
