@@ -16,11 +16,6 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 5000;
 
 
-app.use("/",(req,res) =>{
-  res.send("Api is running now")
-})
-
-
 //All routing goes here
 app.use("/user/",userrouter);
 app.use("/challenge/",questionRoute)
