@@ -22,7 +22,7 @@ app.use("/challenge/",questionRoute)
 app.use("/code",executionRoute)
 app.use(sessionRoute)
 
-const db = mongoose.connect("mongodb+srv://nishant1234:nishant1234@cluster0.kr2s6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{
+const db = mongoose.connect("mongodb+srv://nishant:nishant1234@summer.kr2s6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",{
   useUnifiedTopology: true,
   useFindAndModify:true,
   useCreateIndex:true,
