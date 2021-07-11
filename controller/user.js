@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { questionModel } from "../Schema/questionSchema.js";
 import nodemailer from "nodemailer";
-import Verifier from "email-verifier";
+
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -68,7 +68,7 @@ export const signUp = async (req, res) => {
     return res.send({ message: "Please check your email id" });
   }
 
-  // let verifier = new Verifier("at_NuHUsCOHZM9I4Ov1xkdzU8aOLOlXf");
+ 
 
   try {
   
