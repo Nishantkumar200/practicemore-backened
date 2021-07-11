@@ -7,6 +7,7 @@ import questionRoute from "./router/questionRoute.js";
 import executionRoute from "./router/codeExecutionRoute.js";
 import { sessionRoute } from "./router/sessionRoute.js";
 import {Server} from 'socket.io'
+import { isProfiler } from "react-is";
 const app = express();
 
 
@@ -20,12 +21,12 @@ const PORT = process.env.PORT || 5000;
 
 
 //All routing goes here
-app.use("/user/",userrouter);
-app.use("/challenge/",questionRoute)
+app.use("/user",userrouter);
+app.use("/challenge",questionRoute)
 app.use("/code",executionRoute)
 app.use(sessionRoute)
 
-const db = mongoose.connect(process.env.MONGODB_URI||  'mongodb://localhost:27017/summerInovation',{
+const db = mongoose.connect(process.env.MONGODB_URI|| 'mongodb://localhost:27017/summerInovation',{
  useNewUrlParser:true,
  useUnifiedTopology:true,
  useFindAndModify:true,
@@ -36,6 +37,8 @@ const db = mongoose.connect(process.env.MONGODB_URI||  'mongodb://localhost:2701
 db.then(() => console.log("Successfully connnected to the database")).catch(
   (err) => console.log(err)
 );
+
+
 
 // socket server
 
