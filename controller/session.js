@@ -7,17 +7,14 @@ const transporter = nodemailer.createTransport({
   secure: false,
 
   auth: {
-    user: "nikku1456321@gmail.com",
-    pass: "8521824925",
+    user: process.env.USER || 'nikku1456321@gmail.com',
+    pass: process.env.PASSWORD,
   },
 });
 export const sendLinkToFreind = async (req, res) => {
   const { mail,meetLink } = req.body;
 
-  // send mail to freind
-
-  const meetingId = nanoid();
-
+  
   try {
     let info = transporter.sendMail({
       from: "nikku1456321@gmail.com", // sender address
