@@ -25,7 +25,7 @@ app.use("/challenge/",questionRoute)
 app.use("/code",executionRoute)
 app.use(sessionRoute)
 
-const db = mongoose.connect("mongodb+srv://nishant:nishant1234@summer.kr2s6.mongodb.net/summerInovation?retryWrites=true&w=majority",{
+const db = mongoose.connect(process.env.MONGODB_URI||  'mongodb://localhost:27017/summerInovation',{
  useNewUrlParser:true,
  useUnifiedTopology:true,
  useFindAndModify:true,
