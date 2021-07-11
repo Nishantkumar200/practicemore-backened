@@ -20,9 +20,9 @@ const PORT = process.env.PORT || 5000;
 
 
 //All routing goes here
-app.use("user/",userrouter);
-app.use("challenge/",questionRoute)
-app.use("code",executionRoute)
+app.use("/user/",userrouter);
+app.use("/challenge/",questionRoute)
+app.use("/code",executionRoute)
 app.use(sessionRoute)
 
 const db = mongoose.connect("mongodb+srv://nishant:nishant1234@summer.kr2s6.mongodb.net/summerInovation?retryWrites=true&w=majority",{
