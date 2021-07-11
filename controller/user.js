@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { questionModel } from "../Schema/questionSchema.js";
 import nodemailer from "nodemailer";
+import Verifier from "email-verifier";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -16,13 +17,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export const signIn = async (req, res) => {
-  const { email,password } = req.body;
+  const { email, password } = req.body;
   const user = await userModel.findOne({ email });
   if (user) {
-    const comparePassword = await bcrypt.compareSync(
-      password,
-      user.password
-    );
+    const comparePassword = await bcrypt.compareSync(password, user.password);
 
     if (comparePassword) {
       res.status(200).send({
@@ -36,7 +34,10 @@ export const signIn = async (req, res) => {
         meetings: user.meeting,
       });
     } else {
-      return res.send({ message: "Email or passsword is incorrect", isAuthenticated: false });
+      return res.send({
+        message: "Email or passsword is incorrect",
+        isAuthenticated: false,
+      });
       // res.send({ message: "Password is wrong", isAuthenticated:false });
     }
   } else {
@@ -52,47 +53,62 @@ export const signIn = async (req, res) => {
 export const signUp = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
-  if(username.length==0  || password.length == 0|| email.length ==0 || confirmPassword.length == 0 ){
-    return res.send({message:"All fields are requireed"})
+  if (
+    username.length == 0 ||
+    password.length == 0 ||
+    email.length == 0 ||
+    confirmPassword.length == 0
+  ) {
+    return res.send({ message: "All fields are requireed" });
   }
 
+  let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  if (!email.match(regexEmail)) {
+    return res.send({ message: "Please check your email id" });
+  }
+
+  // let verifier = new Verifier("at_NuHUsCOHZM9I4Ov1xkdzU8aOLOlXf");
+
   try {
-    let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if(email.match(regexEmail)){
-      const existingUser = await userModel.findOne({email});
+  
+    if (email.match(regexEmail)) {
+
+  
+      
+      const existingUser = await userModel.findOne({ email });
 
       // if email is existing
       if (existingUser) {
-       // return res.status(400).send({ message: "Email is already existing" });
+        // return res.status(400).send({ message: "Email is already existing" });
         return res.send({ message: "Email is already existing" });
       }
-  
-  
+
       // checking password length
-  
-      if(password.length<8){
-        return res.send({message:"Password is too short"})
+
+      if (password.length < 6) {
+        return res.send({ message: "Password is too short" });
       }
       // Now Comparing Password
-  
+
       if (password !== confirmPassword) {
         //return res.status(401).json({ error: "Password do not match" });
         return res.send({ message: "Password do not match" });
       }
-  
+
       // if email is not existing
       const hashPassword = await bcrypt.hashSync(password, 12);
-  
+
       const createNewUser = new userModel({
         name: username,
         email: email,
         password: hashPassword,
       });
-  
+
       // Inserting new user into the database
-  
+
       const newUser = await createNewUser.save();
-  
+
       // To Recieve the data we have to send like that
       res.status(201).send({
         id: newUser._id,
@@ -100,13 +116,10 @@ export const signUp = async (req, res) => {
         email: newUser.email,
         isAuthenticated: true,
         token: jwt.sign({ id: newUser._id }, "secret", { expiresIn: "1h" }),
-        message:"Successfully you have created an account "
       });
-
-    }else{
-      return res.send({message:"Please check your Email id"})
+    } else {
+      return res.send({ message: "Please check your Email id" });
     }
-    
 
     // For sending the mail newly user created an account
 
@@ -128,24 +141,6 @@ export const signUp = async (req, res) => {
 
 export const meeting = async (req, res) => {
   const { id, language, selectedDate } = req.body;
-
-  const userDetail = await userModel.findById({ _id: id });
-
-  //code for matching peer
-  const findAllPeer = await userModel.find({});
-  const numberOfUser = findAllPeer.length;
-  function RestPeer(id) {
-    return findAllPeer.filter((x) => x._id != id);
-  }
-
-  const remainingUser = RestPeer(id);
-
-  function generateRandomUser(numberOfUser) {
-    return remainingUser[Math.floor(Math.random() * numberOfUser)];
-  }
-
-  const MatchedPeer = generateRandomUser(numberOfUser);
- console.log("matched",MatchedPeer);
 
   // Setting the question papaer
 
@@ -172,9 +167,10 @@ export const meeting = async (req, res) => {
           {
             language: language,
             slottime: selectedDate,
-            withPeerName: MatchedPeer?.name,
             questionId: matchedQuestionId,
-            quesionyouask:"Decrypt message"
+            quesionyouask: "Decrypt message",
+            isJoined: false,
+            meetingLink: "http://localhost:5000",
           },
         ],
       },
