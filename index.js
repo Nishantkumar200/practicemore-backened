@@ -7,7 +7,6 @@ import questionRoute from "./router/questionRoute.js";
 import executionRoute from "./router/codeExecutionRoute.js";
 import { sessionRoute } from "./router/sessionRoute.js";
 import {Server} from 'socket.io'
-import { isProfiler } from "react-is";
 const app = express();
 import dotenv from 'dotenv'
 dotenv.config();
@@ -15,10 +14,11 @@ dotenv.config();
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: false }));
 app.use(bodyParser.json());
-
-
-
 const PORT = process.env.PORT || 5000;
+
+app.get("/",(req,res) =>{
+  res.send('server is running now')
+})
 
 
 //All routing goes here
