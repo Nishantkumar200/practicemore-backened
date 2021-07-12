@@ -9,7 +9,8 @@ import { sessionRoute } from "./router/sessionRoute.js";
 import {Server} from 'socket.io'
 import { isProfiler } from "react-is";
 const app = express();
-
+import dotenv from 'dotenv'
+dotenv.config();
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: false }));

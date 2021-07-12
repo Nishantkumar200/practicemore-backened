@@ -1,16 +1,17 @@
 import nodemailer from "nodemailer";
-import { nanoid } from 'nanoid'
-
+import dotenv from 'dotenv'
+dotenv.config();
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
 
   auth: {
-    user: process.env.USER || 'nikku1456321@gmail.com',
+    user: process.env.USER ,
     pass: process.env.PASSWORD,
   },
 });
+
 export const sendLinkToFreind = async (req, res) => {
   const { mail,meetLink } = req.body;
 
@@ -29,7 +30,7 @@ export const sendLinkToFreind = async (req, res) => {
     info.then((data) => console.log(data)).catch((err) => console.log(err));
 
     if (info) {
-      res.send({meetingId:`${meetingId}`});
+      res.send({messgage:"message has been sent"});
     } else {
       res.send({ msg: "Some internal error happend" });
     }
