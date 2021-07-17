@@ -133,6 +133,7 @@ export const signUp = async (req, res) => {
 
     // info.then((data) => console.log(data)).catch((err) => console.log(err));
   } catch (error) {
+    
     console.log(error.message);
   }
 };
@@ -235,7 +236,6 @@ export const deleteMeeting = async (req, res) => {
   try {
     const meetingId = req.params.meetingId;
     const userId = req.params.userId;
-    console.log(meetingId, userId);
 
     const deletedMeeting = await userModel.findByIdAndUpdate(
       userId,
