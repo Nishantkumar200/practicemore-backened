@@ -35,14 +35,14 @@ const sendTokenResponse = (token, res) => {
   );
 };
 
-app.get("/greeting", (req, res) => {
-  res.send("hello world");
-  // const name = req.query.name || 'World';
-  // res.setHeader('Content-Type', 'application/json');
-  // res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
-});
+// app.get("/greeting", (req, res) => {
+//   res.send("hello world");
+//   const name = req.query.name || 'World';
+//   res.setHeader('Content-Type', 'application/json');
+//   res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+// });
 
-app.get("video/token", (req, res) => {
+app.get("/video/token", (req, res) => {
   const identity = req.query.identity;
   const room = req.query.room;
   const token = videoToken(identity, room, config);
@@ -61,6 +61,7 @@ app.use("/user", userrouter);
 app.use("/challenge", questionRoute);
 app.use("/code", executionRoute);
 app.use(sessionRoute);
+app.use('/greeting',userrouter)
 
 // process.env.MONGODB_URI ||
 const db = mongoose.connect("mongodb://localhost:27017/summerInovation", {

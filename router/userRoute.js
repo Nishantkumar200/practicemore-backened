@@ -11,5 +11,6 @@ userrouter.post('/meeting',expressAsyncHandler(meeting))
 userrouter.get('/allmeeting/:id',expressAsyncHandler(allmeeting));
 userrouter.delete('/delete/meeting/:meetingId/:userId',expressAsyncHandler(deleteMeeting))
 userrouter.put('/meeting/reschedule/:userId/:meetingId',expressAsyncHandler(reschedule))
+userrouter.get('/meeting',(req,res) =>res.send('Some thing is working'))
 
 export default userrouter;
