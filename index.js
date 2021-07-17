@@ -64,7 +64,7 @@ app.use(sessionRoute);
 
 
 // process.env.MONGODB_URI ||
-const db = mongoose.connect("mongodb://localhost:27017/summerInovation", {
+const db = mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/summerInovation", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: true,
