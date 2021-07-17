@@ -35,6 +35,6 @@
     "socket.io": "^4.1.2",
     "twilio": "^3.65.0",
     "uuid": "^8.3.2"
-  },
-  "proxy": "https://nishantsite.herokuapp.com"
+  }
+
 }

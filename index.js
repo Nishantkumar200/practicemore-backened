@@ -45,6 +45,45 @@ db.then(() => console.log("Successfully connnected to the database")).catch(
   (err) => console.log(err)
 );
 
+
+
+
+// for video calling
+
+const sendTokenResponse = (token, res) => {
+  res.set('Content-Type', 'application/json');
+  res.send(
+    JSON.stringify({
+      token: token.toJwt()
+    })
+  );
+};
+
+app.get('/greeting', (req, res) => {
+  res.send('hello world')
+  // const name = req.query.name || 'World';
+  // res.setHeader('Content-Type', 'application/json');
+  // res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+
+});
+
+app.get('video/token', (req, res) => {
+  const identity = req.query.identity;
+  const room = req.query.room;
+  const token = videoToken(identity, room, config);
+  sendTokenResponse(token, res);
+
+});
+app.post('/video/token', (req, res) => {
+  const identity = req.body.identity;
+  const room = req.body.room;
+  console.log(identity,room)
+  const token = videoToken(identity, room, config);
+  sendTokenResponse(token, res);
+});
+
+
+
 // socket server
 const server = app.listen(PORT, () =>
   console.log(`Server is running now on port ${PORT}`)
@@ -60,38 +99,5 @@ io.on("connection", (socket) => {
   socket.on("canvas-data", (data) => {
     socket.broadcast.emit("canvas-data", data);
   });
-});
-
-
-// for video calling
-
-const sendTokenResponse = (token, res) => {
-  res.set('Content-Type', 'application/json');
-  res.send(
-    JSON.stringify({
-      token: token.toJwt()
-    })
-  );
-};
-
-app.get('/api/greeting', (req, res) => {
-  const name = req.query.name || 'World';
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
-});
-
-app.get('/video/token', (req, res) => {
-  const identity = req.query.identity;
-  const room = req.query.room;
-  const token = videoToken(identity, room, config);
-  sendTokenResponse(token, res);
-
-});
-app.post('/video/token', (req, res) => {
-  const identity = req.body.identity;
-  const room = req.body.room;
-  console.log(identity,room)
-  const token = videoToken(identity, room, config);
-  sendTokenResponse(token, res);
 });
 
