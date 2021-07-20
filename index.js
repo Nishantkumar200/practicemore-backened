@@ -25,7 +25,6 @@ app.get("/", (req, res) => {
 });
 
 // for video calling
-
 const sendTokenResponse = (token, res) => {
   res.set("Content-Type", "application/json");
   res.send(
@@ -37,8 +36,8 @@ const sendTokenResponse = (token, res) => {
 
 app.get("/greeting", (req, res) => {
   res.send("hello world");
-  const name = req.query.name || 'World';
-  res.setHeader('Content-Type', 'application/json');
+  const name = req.query.name || "World";
+  res.setHeader("Content-Type", "application/json");
   res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
 });
 
@@ -62,14 +61,16 @@ app.use("/challenge", questionRoute);
 app.use("/code", executionRoute);
 app.use(sessionRoute);
 
-
 // process.env.MONGODB_URI ||
-const db = mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/summerInovation", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: true,
-  useCreateIndex: true,
-});
+const db = mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost:27017/summerInovation",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: true,
+    useCreateIndex: true,
+  }
+);
 
 db.then(() => console.log("Successfully connnected to the database")).catch(
   (err) => console.log(err)

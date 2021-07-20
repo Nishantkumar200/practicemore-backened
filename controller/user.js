@@ -3,7 +3,9 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { questionModel } from "../Schema/questionSchema.js";
 import nodemailer from "nodemailer";
-
+import dotenv from "dotenv";
+import moment from "moment";
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -11,8 +13,8 @@ const transporter = nodemailer.createTransport({
   secure: false,
 
   auth: {
-    user: "nikku1456321@gmail.com",
-    pass: "8521824925",
+    user: process.env.USER,
+    pass: process.env.PASSWORD,
   },
 });
 
@@ -38,10 +40,8 @@ export const signIn = async (req, res) => {
         message: "Email or passsword is incorrect",
         isAuthenticated: false,
       });
-      // res.send({ message: "Password is wrong", isAuthenticated:false });
     }
   } else {
-    // res.send({ message: "Email or Password do not match",isAuthenticated:false });
     return res.send({
       message: "Please check your email or password",
       isAuthenticated: false,
@@ -50,6 +50,7 @@ export const signIn = async (req, res) => {
 };
 
 // #################  Registering New User ################
+
 export const signUp = async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
@@ -68,14 +69,8 @@ export const signUp = async (req, res) => {
     return res.send({ message: "Please check your email id" });
   }
 
- 
-
   try {
-  
     if (email.match(regexEmail)) {
-
-  
-      
       const existingUser = await userModel.findOne({ email });
 
       // if email is existing
@@ -84,8 +79,14 @@ export const signUp = async (req, res) => {
         return res.send({ message: "Email is already existing" });
       }
 
-      // checking password length
+      // if (!password.match(regexPassword)) {
+      //   return res.send({
+      //     message:
+      //       "Password should contain at least 6 characters including Uppercase(A-Z),Lowercase(a-z)and numeric(0-9) and no special characters",
+      //   });
+      // }
 
+      // checking password length
       if (password.length < 6) {
         return res.send({ message: "Password is too short" });
       }
@@ -123,25 +124,27 @@ export const signUp = async (req, res) => {
 
     // For sending the mail newly user created an account
 
-    // let info = transporter.sendMail({
-    //   from: "nikku1456321@gmail.com", // sender address
-    //   to: newUser.email, // list of receivers
-    //   subject: "Congratulations", // Subject line
-    //   // text: "You have successfully created an account on SummerInovation Website Building", // plain text body
-    //   html: `<b> Hey ${newUser.name} , You have successfully created an account on SummerInovation Website Building</b>`, // html body
-    // });
+    let info = transporter.sendMail({
+      from: "nikku1456321@gmail.com", // sender address
+      to: email, // list of receivers
+      subject: "Welcome to Practicemore", // Subject line
+      text: "Your account has been successfully created.", // plain text body
+      html: `<p>Your account has been successfully created</p>
+      </br>
+      Let's have a fun <a href="practicemore.netlify.app">Go to website</a>`,
+    });
 
-    // info.then((data) => console.log(data)).catch((err) => console.log(err));
+    info.then((data) => console.log(data)).catch((err) => console.log(err));
   } catch (error) {
-    
     console.log(error.message);
   }
 };
 
 //  to schedule meeting
-
 export const meeting = async (req, res) => {
   const { id, language, selectedDate } = req.body;
+
+  const userDetail = await userModel.findOne({ _id: id });
 
   // Setting the question papaer
 
@@ -180,21 +183,20 @@ export const meeting = async (req, res) => {
     // Send the mail of meeting is confirmed
     // For now email functionality is disabled
 
-    // let info = transporter.sendMail({
-    //   from: "nikku1456321@gmail.com", // sender address
-    //   to: userDetail.email, // list of receivers
-    //   subject: "Congratulations !", // Subject line
-    //   // text: `You have successfully booked your meeting  `, // plain text body
-    //   html: `<p>Hey ${
-    //     userDetail.name
-    //   } We are happy to share the details of your upcoming interview practice :</p> <br>
-    //  When: ${moment(selectedDate).format("dddd, MMMM Do YYYY, h:mm A ")} <br>
-    //  Interview Type : ${language} <br>
-    //  Peer Name : ${MatchedPeer.name} <br>
-    //  Meeting Link : <a href ="http://localhost:3000/session/join">Join Now</a>`, // html body
-    // });
+    let info = transporter.sendMail({
+      from: "nikku1456321@gmail.com", // sender address
+      to: userDetail.email, // list of receivers
+      subject: "Congratulations !", // Subject line
+      text: `You have successfully booked your meeting  `, // plain text body
+      html: `<p>Hey ${
+        userDetail.name
+      } We are happy to share the details of your upcoming interview practice :</p> <br>
+     When: ${moment(selectedDate).format("dddd, MMMM Do YYYY, h:mm A ")} <br>
+     Interview Type : ${language} <br>
+      Practice before meeting ,see the question details : <a href ="practicemore.netlify.app/challenge/${matchedQuestionId}">Try Now</a>`, // html body
+    });
 
-    // info.then((data) => console.log(data)).catch((err) => console.log(err));
+    info.then((data) => console.log(data)).catch((err) => console.log(err));
 
     if (pushedMeeting) {
       res.status(200).send({ allMeetings: pushedMeeting.meeting });
@@ -272,6 +274,61 @@ export const reschedule = async (req, res) => {
 
     res.status(200).json(rescheduleMeet);
     console.log(rescheduleMeet);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// sending the email request
+
+export const sendRequestEmail = async (req, res) => {
+  const { email } = req.body;
+  // For sending the mail newly user created an account
+
+  try {
+    let info = transporter.sendMail({
+      from: "nikku1456321@gmail.com", // sender address
+      to: email, // list of receivers
+      subject: "Request for password reset", // Subject line
+      text: "Please click on the below link for reseting your password", // plain text body
+      html: `<a href ="http://localhost:3000/resetpassword?email=${email}">Reset Password</a>`, // html body
+    });
+
+    info.then((data) => console.log(data)).catch((err) => console.log(err));
+
+    res.send("Email has been send successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// For updating the password
+
+export const updatePassword = async (req, res) => {
+  const { email, newpassword } = req.body;
+
+  console.log(email, newpassword);
+
+  try {
+    const gotUser = await userModel.findOne({ email });
+
+    if (gotUser) {
+      await userModel.findByIdAndUpdate(
+        gotUser?._id,
+        {
+          password: await bcrypt.hashSync(newpassword, 12),
+        },
+        (err, doc) => {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+
+      res.send("Password has been reset");
+    } else {
+      res.send("Check your email ");
+    }
   } catch (error) {
     console.log(error);
   }
