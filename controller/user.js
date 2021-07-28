@@ -291,7 +291,7 @@ export const sendRequestEmail = async (req, res) => {
       to: email, // list of receivers
       subject: "Request for password reset", // Subject line
       text: "Please click on the below link for reseting your password", // plain text body
-      html: `<a href ="http://localhost:3000/resetpassword?email=${email}">Reset Password</a>`, // html body
+      html: `<a href ="https://practicemore.netlify.app/resetpassword?email=${email}">Reset Password</a>`, // html body
     });
 
     info.then((data) => console.log(data)).catch((err) => console.log(err));
