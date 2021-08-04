@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
         language: { type: String },
         slottime: { type: String },
         questionId: { type: mongoose.Mixed },
-        quesionyouask:{type:String},
+        questionyouask:{type:String},
         isJoined:false,
         meetingLink:{type:String},
         

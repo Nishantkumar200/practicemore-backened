@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendLinkToFreind = async (req, res) => {
-  const { mail,meetLink } = req.body;
+  const { mail,meetLink,invitesentby } = req.body;
 
   
   try {
@@ -22,7 +22,7 @@ export const sendLinkToFreind = async (req, res) => {
       to: mail, // list of receivers
       subject: "Practice With Freind", // Subject line
       // text: "You have successfully created an account on SummerInovation Website Building", // plain text body
-      html: `<h1>Your freind has invited you to do practice <br>
+      html: `<h1>Your freind,  <b>${invitesentby}</b> has invited you to do practice <br>
            <p>Use this link to get practice now :  <a href = ${meetLink}>Join this Meeting</a></p>
           </h1>`, // html body
     });

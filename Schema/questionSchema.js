@@ -5,7 +5,7 @@ const questionSchema = new mongoose.Schema({
   hints: { type: String },
   answer: { type: String },
   language: { type: String },
-  quesionyouask:{type:String}
+  questionyouask:{type:String}
 });
 
 export const  questionModel = mongoose.model('Question',questionSchema);

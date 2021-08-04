@@ -150,9 +150,23 @@ export const meeting = async (req, res) => {
 
   const findAllQuestion = await questionModel.find({});
 
+  // get question type
+
+  const getQuestionType = () => {
+    const gotQuestionType = findAllQuestion.filter(
+      (x) => x.language == language
+    );
+    const type = gotQuestionType.map((item) => {
+      return item.questionyouask;
+    });
+
+    return type[0];
+  };
+
+  console.log(getQuestionType(), "question Type");
+
   const findMatchedQuestion = (language) => {
     const foundQuestion = findAllQuestion.filter((x) => x.language == language);
-
     const getId = foundQuestion.map((item) => {
       return item._id;
     });
@@ -162,6 +176,7 @@ export const meeting = async (req, res) => {
 
   const matchedQuestionId = findMatchedQuestion(language);
 
+  console.log(getQuestionType());
   try {
     // For inserting the new meeting
     const pushedMeeting = await userModel.findByIdAndUpdate(id, {
@@ -172,16 +187,15 @@ export const meeting = async (req, res) => {
             language: language,
             slottime: selectedDate,
             questionId: matchedQuestionId,
-            quesionyouask: "Decrypt message",
+            questionyouask: getQuestionType(),
             isJoined: false,
-            meetingLink: "http://localhost:5000",
+            meetingLink: "",
           },
         ],
       },
     });
 
     // Send the mail of meeting is confirmed
-    // For now email functionality is disabled
 
     let info = transporter.sendMail({
       from: "nikku1456321@gmail.com", // sender address
